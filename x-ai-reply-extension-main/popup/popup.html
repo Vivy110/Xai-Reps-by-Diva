@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h2>🤖 Universal AI Reply</h2>
+    
+    <!-- AI Provider Selection -->
+    <div class="input-group">
+      <label for="aiProvider">AI Provider:</label>
+      <select id="aiProvider" class="select-dropdown">
+        <optgroup label="Popular Providers">
+          <option value="openai">OpenAI (GPT-4, GPT-3.5)</option>
+          <option value="claude">Anthropic Claude</option>
+          <option value="gemini">Google Gemini</option>
+          <option value="groq">Groq (Llama - FREE)</option>
+        </optgroup>
+        <optgroup label="More Providers">
+          <option value="grok">xAI Grok</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="perplexity">Perplexity</option>
+          <option value="mistral">Mistral AI</option>
+          <option value="together">Together AI</option>
+        </optgroup>
+        <optgroup label="Local/Custom">
+          <option value="ollama">Ollama (Local)</option>
+          <option value="custom">Custom API Endpoint</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- Custom API Configuration (Hidden by default) -->
+    <div id="customConfig" style="display: none;">
+      <div class="custom-section">
+        <h3>⚙️ Custom API Configuration</h3>
+        
+        <div class="input-group">
+          <label for="customApiUrl">API Endpoint URL:</label>
+          <input type="text" id="customApiUrl" placeholder="https://api.example.com/v1/chat/completions">
+          <small class="hint">Full URL to your API endpoint</small>
+        </div>
+
+        <div class="input-group">
+          <label for="customRequestFormat">Request Format:</label>
+          <select id="customRequestFormat" class="select-dropdown">
+            <option value="openai">OpenAI-Compatible (Most common)</option>
+            <option value="claude">Claude Format</option>
+            <option value="gemini">Gemini Format</option>
+            <option value="ollama">Ollama Format</option>
+          </select>
+          <small class="hint">Choose the API format your endpoint uses</small>
+        </div>
+
+        <div class="input-group">
+          <label for="customAuthHeader">Auth Header Name:</label>
+          <input type="text" id="customAuthHeader" placeholder="Authorization" value="Authorization">
+          <small class="hint">e.g., Authorization, x-api-key, api-key</small>
+        </div>
+
+        <div class="input-group">
+          <label for="customAuthPrefix">Auth Prefix:</label>
+          <input type="text" id="customAuthPrefix" placeholder="Bearer" value="Bearer">
+          <small class="hint">e.g., Bearer, Token (leave empty if not needed)</small>
+        </div>
+
+        <div class="input-group">
+          <label for="customModels">Available Models (comma-separated):</label>
+          <input type="text" id="customModels" placeholder="model-1, model-2, model-3">
+          <small class="hint">List of models your API supports</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Selection -->
+    <div class="input-group">
+      <label for="selectedModel">Model:</label>
+      <select id="selectedModel" class="select-dropdown">
+        <option value="">Loading models...</option>
+      </select>
+    </div>
+    
+    <!-- API Key -->
+    <div class="input-group">
+      <label for="apiKey">API Key:</label>
+      <div class="input-with-button">
+        <input type="password" id="apiKey" placeholder="Enter your API key">
+        <button type="button" id="toggleKey" class="toggle-key-btn">👁️</button>
+      </div>
+      <small class="hint" id="apiKeyHint">Leave empty for Ollama (local)</small>
+    </div>
+
+    <!-- Test Connection Button -->
+    <button id="testBtn" class="secondary-button">🔌 Test Connection</button>
+    <div id="testStatus" class="test-status" style="display: none;"></div>
+
+    <!-- Custom Instructions -->
+    <div class="input-group">
+      <label for="customInstructions">Custom Instructions (Optional):</label>
+      <textarea id="customInstructions" placeholder="e.g., Be friendly and use emojis, Reply in Bahasa Indonesia..." rows="3"></textarea>
+      <small class="hint">Customize how AI generates replies</small>
+    </div>
+    
+    <!-- Save Button -->
+    <button id="saveBtn" class="primary-button">💾 Save Settings</button>
+    
+    <div id="status" class="status" style="display: none;"></div>
+    
+    <!-- API Key Help Links -->
+    <div class="api-links">
+      <p class="links-title">📖 Documentation:</p>
+      <div id="apiKeyLinks" class="links-container"></div>
+    </div>
+
+    <!-- Quick Examples -->
+    <div class="examples-section">
+      <details>
+        <summary>💡 Custom API Examples</summary>
+        <div class="example-cards">
+          <div class="example-card">
+            <h4>OpenRouter</h4>
+            <p><strong>URL:</strong> https://openrouter.ai/api/v1/chat/completions</p>
+            <p><strong>Format:</strong> OpenAI-Compatible</p>
+            <p><strong>Auth:</strong> Authorization: Bearer YOUR_KEY</p>
+          </div>
+          <div class="example-card">
+            <h4>Hugging Face</h4>
+            <p><strong>URL:</strong> https://api-inference.huggingface.co/models/MODEL_NAME</p>
+            <p><strong>Format:</strong> Custom (varies)</p>
+            <p><strong>Auth:</strong> Authorization: Bearer YOUR_KEY</p>
+          </div>
+          <div class="example-card">
+            <h4>Local LM Studio</h4>
+            <p><strong>URL:</strong> http://localhost:1234/v1/chat/completions</p>
+            <p><strong>Format:</strong> OpenAI-Compatible</p>
+            <p><strong>Auth:</strong> Not required</p>
+          </div>
+          <div class="example-card">
+            <h4>vLLM Server</h4>
+            <p><strong>URL:</strong> http://localhost:8000/v1/chat/completions</p>
+            <p><strong>Format:</strong> OpenAI-Compatible</p>
+            <p><strong>Auth:</strong> Not required</p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Usage Instructions -->
+    <div class="usage">
+      <h3>How to use:</h3>
+      <ol>
+        <li>Select provider or choose "Custom API"</li>
+        <li>Configure API settings</li>
+        <li>Enter API key (if required)</li>
+        <li>Test connection</li>
+        <li>Go to X.com and reply to tweets!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
