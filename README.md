@@ -2,7 +2,7 @@
 
 # TUTOR PAKAI EXTENSION X AI REPLY 
 1. download file ini di GitHub
-2. ke chorme buka extension > developer mode > upload file yang Sudah di download tadi
+2. ke chorme buka extension > developer mode > upload file x-ai-reply-extension-main 
 3. paste api key 
 4. paste prompt agar terlihat natural
 5. test connection jika hijau maka siap di gunakan
